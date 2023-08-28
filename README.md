@@ -1,6 +1,5 @@
 # Matlab_freshman
 Matllab新手入门帮助教程
-**阅读文档--->基础入门.md**
 # Matlab 入门手册
 ## 1.四种取整类型 
 * round ---四舍五入取整，.5时向上取
