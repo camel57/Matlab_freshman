@@ -308,3 +308,109 @@ end
 ![12](pic/12.jpg)
 差分结果：  
 ![13](pic/13.jpg)  
+## 11.字符串  
+* disp/size/double/char
+* 字符串连接
+* 比较、 查找、替换
+* 字符串转换
+* eval函数：eval('')---此函数括号内的内容永远为字符串类型，字符串将被当作命令执行，有很多巧妙的用法。
+
+```matlab
+%% 字符串
+clear;clc;
+my_char = 'My name is bob';
+str1 = ' yes';
+disp(my_char);
+disp(size(my_char));
+disp(double(my_char));%将字符串以ASCII码进行显示
+%连接
+s1 = [my_char,str1]; s11 = strcat(my_char,s1);
+disp(s11);disp(s1);
+%比较
+if strcmp(my_char,s1)
+    disp('相同');
+else
+    disp('不相同');
+end
+
+if strncmp(my_char,s1,4)
+    disp('前四位相同');
+else
+    disp('前四位不同');
+end
+% 查找
+loc = strfind(my_char,'bob');
+disp(loc);
+% 替换
+s3 = strrep(my_char,'bob','ben');
+disp(['替换后为：',s3]);
+%字符串转换与eval函数
+%下面实现创建一系列变量，并将计算结果存入（实际有简单方法，此例只为使用函数）
+x1 = pi/6;x2 = pi/3;x3 = pi/2;
+disp('eval使用:')
+for i = 1:3
+    vab_name = strcat('y',num2str(i));%将数值i转换为字符串类型创建变量y1~y3
+    res = sin(eval(['x',num2str(i)]));%eval中永远为字符串类型
+    eval([vab_name,'=res;']);%反括号的作用是连接字符串
+    disp(res);
+end
+```  
+
+运行结果：
+
+![14](pic/14.jpg)  
+## 12.多项式  
+1. 多项式的建立  
+
+   * 由系数建立多项式 poly2sym
+   * 由根建立多项式 poly/poly2sym
+2. 带入计算数值，处理对象为矩阵 polyval
+3. 已知系数求根；已知根求系数
+4. 乘法和卷积
+5. 导数、积分
+    * 单独对某个多项式求导
+    * 对两个多项式的乘积求导
+    * 对分数形式多项式求导：[q,d] = polyder(b,a)$$对\frac{b}{a}求导，结果为\frac{q}{d}$$
+    * 是否带有不定常数的积分
+6. 部分分式展开法---在信号系统中，求逆Z变换有重要作用  
+7. 如果你有一些数据点，想要拟合一个多项式到这些数据，可以使用 polyfit 函数。阶数越高拟合效果越好
+```matlab
+%% 多项式练习
+clear;clc;
+coe = [1 -5 6];ro = [2,3];
+%多项式的建立
+a1 = poly2sym(coe);
+disp(a1);
+coe_ro = poly(ro);
+disp('由根求得的系数：');
+disp(coe_ro);
+a2 = poly2sym(coe_ro);
+disp(a2);
+%多项式求值
+val = 1:4;
+res1 = polyval(coe,val);
+disp(res1);
+%求根
+res_roots = roots(coe);
+disp(res_roots);
+%卷积、乘法---两个多项式的系数矩阵进行运算；两离散信号序列卷积
+coe1 = [2 3 3 4];
+res_mul = conv(coe,coe1);
+disp(res_mul);
+%求导与积分
+der1 = polyder(coe);
+der2 = polyder(coe,coe1);%乘积项求导
+[q,d] = polyder(coe,coe1);%分数形式
+disp('单独求导：');disp(der1);
+disp(der2);
+disp('分子：');disp(q);
+disp('分母：');disp(d);
+% 部分分式展开
+[r,p,k] = residue(coe1,coe);%r-余数，p-极点，k-常系数
+disp('余数：');disp(r);
+disp('极点：');disp(p);
+disp('常数：');disp(k);
+```  
+![15](pic/15.jpg)
+![16](pic/16.jpg)
+详细的拟合、插值、极限等操作查阅网上其他资料很方便，不多叙述。  
