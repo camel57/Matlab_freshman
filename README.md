@@ -415,3 +415,122 @@ disp('常数：');disp(k);
 ![16](pic/16.jpg)  
 
 详细的拟合、插值、极限等操作查阅网上其他资料很方便，不多叙述。  
+## 13.二维绘图
+### plot函数
+  * plot(y)---y为行向量时，就是将这组点绘制在一条曲线上；当为矩阵时，每一列的数在一条线上。
+  * plot(x,y)---要求x,y的维数相同，以x为横坐标，y为纵坐标。
+  * plot(x,y,s)---s为绘制曲线的格式：‘r-*’表示红色、-线形、\*数据点标识。更多线条种类可以参考[s参数选择](https://ww2.mathworks.cn/help/matlab/ref/plot.html)。更多参数可以设置线条宽度、标记点轮廓和颜色
+  * plot(x1,y1,s1,x2,y2,s2)---绘制多条曲线  
+
+### subplot
+subplot(m,n,p)---将m*n维度个小图形画在一张图形中，p：1~m\*n
+* hold
+  * hold on :开启后绘制第二个图时会叠加在第一个图上
+  * hold off：关闭此功能，重新得到新图形
+### 坐标轴设置
+  * axis([xmin xmax ymin ymax])
+  * axis on/off:开启/取消显示坐标抽
+### 网格线和边框
+  * grid on/off:网格线的开启和关闭
+  * box on/off:边框的开启和关闭     
+### 图形的放大和拖拽
+  * zoom on/off:图片可放大/不可;zoom xon/yon:对x/y的缩放
+  * pan on/off:图片可拖拽/不可;pan xon/yon:对x/y的拖拽 
+### line---用直线将数据点连接，输入参数和plot函数相似  
+### 极坐标系绘制图形
+  * 绘制图形---polar(theta,rou,s),s参数与plot函数的参数相似
+  * 极坐标系与直角坐标系的转换：pol2cart/cart2pol
+```matlab
+%% 极坐标
+clear;clc;
+theta = 0:0.01:2*pi;
+rou = sin(theta);
+subplot(211);
+polarplot(theta,rou);
+title('极坐标');
+
+subplot(212);
+[x,y] = pol2cart(theta,rou);
+plot(x,y);
+title('直角坐标');
+grid on;
+axis equal;
+```  
+
+
+![17](pic/17.jpg)
+### 对数坐标
+  * x轴对数化：semilogx
+  * y轴对数化：semilogy
+  * 两个轴同时对数： loglog
+### 双y轴---适用于y轴范围差异大但需要绘制在同一个图片的情况
+
+```matlab
+%% 对数坐标
+clear;clc;clf;
+t = 0.1:0.01:10;
+y1 = log10(t);
+y2 = exp(t);
+x = 10.^t;
+figure(1);
+subplot(321);
+plot(t,y1);
+title('原图');
+subplot(322);
+semilogx(t,y1);
+title('x轴取对数');
+
+subplot(323);
+plot(t,y2);
+title('原图');
+subplot(324);
+semilogy(t,y2);
+title('y轴取对数');
+
+subplot(325);
+plot(x,y2);
+title('原图');
+subplot(326);
+loglog(x,y2);
+title('双对数');
+
+figure(2);
+subplot(211);
+yyaxis left;
+plot(t,y1);
+title('原图');
+ylabel('原坐标轴(左)');
+
+yyaxis right;
+plot(t,y2);
+subplot(212);
+yyaxis left;
+plot(t,y1);
+yyaxis right;
+semilogy(t,y2);
+ylabel('对数坐标轴(右)');
+title('对数坐标轴');
+
+```  
+![18](pic/18.jpg)  
+
+![19](pic/19.jpg)  
+
+### 交互式窗口修改图片
+  * 绘图窗口---查看---绘图编辑工具栏：可以实现加箭头，加框等功能
+  * 绘图窗口---查看---属性编辑器：可以改动线条、坐标轴等
+
+![20](pic/20.jpg)
+### 通过函数修改图形
+  * 标题：title('内容','interpreter','latex');---后两个参数为可选参数，目的是为了显示数学公式表达式
+  * 图例：legend('图例1','图例2',...)
+  * 坐标轴：xlabel、ylabel
+  
+通常输入字符串的参数后面可以加上'interpreter','latex'参数  
+
+![21](pic/21.jpg)
+### 添加文本框  、获取位置信息
+* text(x,y,'内容')---x,y为二维图像中的位置
+* gtext('第一行内容','第二行内容',...)---当图片窗口打开时，鼠标选择位置添加内容，多行内容。
+* gtext('第一处内容’;'第二处内容';...)---同样为鼠标选择内容位置，多次添加，多次单行
+* [m,n] = ginput---图片窗口打开时，鼠标点击的位置会被返回到m,n矩阵中，知道回车后停止操作
